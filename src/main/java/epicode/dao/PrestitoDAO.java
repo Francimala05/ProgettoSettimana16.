@@ -3,12 +3,23 @@ package epicode.dao;
 import epicode.entities.Prestito;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
+import javax.persistence.Query;
+import java.util.List;
 
 public class PrestitoDAO {
     private EntityManager em;
 
     public PrestitoDAO(EntityManager em) {
         this.em = em;
+    }
+
+
+    //QUERY PER PRESTITI SCADUTI
+    public List<Prestito> getPrestitiScaduti() {
+        String jpql = "SELECT p FROM Prestito p WHERE p.dataRestituzione < CURRENT_DATE";
+        Query query = em.createQuery(jpql);
+        query.setMaxResults(10);
+        return query.getResultList();
     }
 
     public void save(Prestito prestito) {
@@ -21,6 +32,9 @@ public class PrestitoDAO {
             System.out.println(e.getMessage());
         }
     }
+
+
+
 
     public Prestito getById(long id) {
         return em.find(Prestito.class, id);
